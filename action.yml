@@ -46,5 +46,5 @@ runs:
       shell: bash
 
 branding:
-  icon: "key"
+  icon: "lock"
   color: "purple"
