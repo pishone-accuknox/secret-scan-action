@@ -23,6 +23,11 @@ inputs:
     description: "Specifies which type(s) of results to output: verified, unknown, unverified, filtered_unverified. Defaults to all types."
     required: false
 
+  fail:
+    description: "Fail the pipeline if secrets are found"
+    required: false
+    default: "true"
+
 runs:
   using: "composite"
   steps:
@@ -33,8 +38,13 @@ runs:
           RESULTS_FLAG="--results ${{ inputs.results }}"
         fi
 
+        FAIL_FLAG=""
+        if [[ "${{ inputs.fail }}" == "true" ]]; then
+          FAIL_FLAG="--fail"
+        fi
+
         docker run --rm -v "$PWD:/pwd" trufflesecurity/trufflehog:latest git file:///pwd \
-        --json --fail --no-update $RESULTS_FLAG > trufflehog-results.json || exit_code=$?
+        --json --no-update $RESULTS_FLAG $FAIL_FLAG > trufflehog-results.json || exit_code=$?
         echo "TRUFFLEHOG_EXIT_CODE=${exit_code:-0}" >> $GITHUB_ENV
       shell: bash
 
