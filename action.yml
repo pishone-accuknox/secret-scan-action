@@ -32,9 +32,9 @@ runs:
         if [[ -n "${{ inputs.results }}" ]]; then
           RESULTS_FLAG="--results ${{ inputs.results }}"
         fi
-        
+
         docker run --rm -v "$PWD:/pwd" trufflesecurity/trufflehog:latest git file:///pwd \
-        --json --fail --no-update > trufflehog-results.json || exit_code=$?
+        --json --fail --no-update $RESULTS_FLAG > trufflehog-results.json || exit_code=$?
         echo "TRUFFLEHOG_EXIT_CODE=${exit_code:-0}" >> $GITHUB_ENV
       shell: bash
 
