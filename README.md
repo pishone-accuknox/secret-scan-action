@@ -93,6 +93,7 @@ All available Flags:
                                  Path to file with newline separated regexes for files to include in scan.
       --exclude-globs=EXCLUDE-GLOBS
                                  Comma separated list of globs to exclude in scan. This option filters at the `git log` level, resulting in faster scans.
+```
 
 ---
 
