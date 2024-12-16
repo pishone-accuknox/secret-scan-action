@@ -110,7 +110,7 @@ on:
       - main
 
 jobs:
-  truffle:
+  find-secrets:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
