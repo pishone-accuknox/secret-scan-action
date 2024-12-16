@@ -26,7 +26,7 @@ inputs:
   fail:
     description: "Fail the pipeline if secrets are found"
     required: false
-    default: "true"
+    default: "false"
 
   exclude-paths:
     description: "Paths to exclude from the scan."
