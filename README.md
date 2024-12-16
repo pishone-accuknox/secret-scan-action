@@ -1,4 +1,4 @@
-# Secret Scan GitHub Action
+# AccuKnox Secret Scan GitHub Action
 
 This GitHub Action scans your repository for secrets and uploads the result to your tenet in AccuKnox SaaS.
 
@@ -26,54 +26,47 @@ This GitHub Action scans your repository for secrets and uploads the result to y
 ## Usage
 
 ```yaml
-name: Secret Scan
+- name: Accuknox Secret Scan
+    uses: accuknox/secret-scan-action@v1.0.0
+    with:
+    # The token for authenticating with the CSPM panel.
+    # Required
+    token: ${{ secrets.ACCUKNOX_TOKEN }}
 
-on:
-  push:
-    branches:
-      - main
+    # The ID of the tenant associated with the CSPM panel.
+    # Required
+    tenant_id: ${{ secrets.ACCUKNOX_TENANT_ID }}
 
-jobs:
-  scan:
-    runs-on: ubuntu-latest
+    # The label created in AccuKnox SaaS for associating scan results.
+    # Required
+    label: 'label-name'
 
-    steps:
-    - name: Checkout Code
-      uses: actions/checkout@v4
+    # The URL of the CSPM panel to push the scan results to.
+    # Default: cspm.demo.accuknox.com
+    # Required
+    endpoint: ${{ secrets.ACCUKNOX_ENDPOINT }}
 
-    - name: Accuknox Secret Scan
-      uses: accuknox/secret-scan-action@v1.0.0
-      with:
-        # The token for authenticating with the CSPM panel.
-        token: ${{ secrets.ACCUKNOX_TOKEN }}
+    # Specifies the type(s) of results to output. Accepts comma-separated values.
+    # Example: unverified, filtered_unverified
+    # Default: all
+    # Optional
+    results: "verified,unknown"
 
-        # The ID of the tenant associated with the CSPM panel.
-        tenant_id: ${{ secrets.ACCUKNOX_TENANT_ID }}
+    # Fail the pipeline if secrets are found.
+    # Accepts: true or false
+    # Default: false
+    # Optional
+    fail: "true"
 
-        # The label created in AccuKnox SaaS for associating scan results.
-        label: 'label-name'
+    # Path to a file containing regex patterns for excluding paths from the scan.
+    # Example: exclude-paths.txt
+    # Optional
+    exclude-paths: "exclude-paths.txt"
 
-        # The URL of the CSPM panel to push the scan results to.
-        # Default: cspm.demo.accuknox.com
-        endpoint: ${{ secrets.ACCUKNOX_ENDPOINT }}
-
-        # Specifies the type(s) of results to output. Accepts comma-separated values.
-        # Example: unverified, filtered_unverified
-        # Default: all
-        results: "verified,unknown"
-
-        # Fail the pipeline if secrets are found.
-        # Accepts: true or false
-        # Default: false
-        fail: "true"
-
-        # Path to a file containing regex patterns for excluding paths from the scan.
-        # Example: exclude-paths.txt
-        exclude-paths: "exclude-paths.txt"
-
-        # Additional arguments to pass. Find the whole list down below.
-        # Example: "--archive-timeout=ARCHIVE-TIMEOUT"
-        args: "--include-detectors="all""
+    # Additional arguments to pass. Find the whole list down below.
+    # Example: "--archive-timeout=ARCHIVE-TIMEOUT"
+    # Optional
+    args: "--include-detectors="all""
 ```
 ### List of available flags
 
@@ -100,3 +93,36 @@ All available Flags:
                                  Path to file with newline separated regexes for files to include in scan.
       --exclude-globs=EXCLUDE-GLOBS
                                  Comma separated list of globs to exclude in scan. This option filters at the `git log` level, resulting in faster scans.
+
+---
+
+## Minimalist Sample Configuration
+
+```yaml
+name: Accuknox Secret Scan
+on: 
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  truffle:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: ${{ github.head_ref }}
+          
+      - name: Accuknox Secret Scan
+        uses: accuknox/secret-scan-action@v1.0.0
+        with:
+          endpoint: ${{ secrets.CSPM_ENDPOINT }}
+          tenant_id: ${{ secrets.TENANT_ID }}
+          label: ${{ vars.LABEL_ID }}
+          token: ${{ secrets.CSPM_TOKEN }}
+          fail: "false"
