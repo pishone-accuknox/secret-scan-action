@@ -17,7 +17,7 @@ This GitHub Action scans your repository for secrets and uploads the result to y
 | `label` | The label created in AccuKnox SaaS. | Required | `None` |
 | `endpoint` | The URL of the CSPM panel to push the scan results to. | Required | `cspm.demo.accuknox.com` |
 | `results` | Specifies which type(s) of results to output: `verified`, `unknown`, `unverified`, `filtered_unverified`. Defaults to all types. | Optional | `all` |
-| `fail` | Fail the pipeline if secrets are found. | Optional | `true` |
+| `fail` | Fail the pipeline if secrets are found. | Optional | `false` |
 | `exclude-paths` | Paths to exclude from the scan. | Optional | `None` |
 | `args` | Additional arguments to pass to TruffleHog. | Optional | `None` |
 
@@ -44,6 +44,19 @@ jobs:
     - name: Accuknox Secret Scan
       uses: accuknox/secret-scan-action@v1.0.0
       with:
+        # The token for authenticating with the CSPM panel.
+        token: ${{ secrets.ACCUKNOX_TOKEN }}
+
+        # The ID of the tenant associated with the CSPM panel.
+        tenant_id: ${{ secrets.ACCUKNOX_TENANT_ID }}
+
+        # The label created in AccuKnox SaaS for associating scan results.
+        label: 'label-name'
+
+        # The URL of the CSPM panel to push the scan results to.
+        # Default: cspm.demo.accuknox.com
+        endpoint: ${{ secrets.ACCUKNOX_ENDPOINT }}
+
         # Specifies the type(s) of results to output. Accepts comma-separated values.
         # Example: unverified, filtered_unverified
         # Default: all
@@ -51,7 +64,7 @@ jobs:
 
         # Fail the pipeline if secrets are found.
         # Accepts: true or false
-        # Default: true
+        # Default: false
         fail: "true"
 
         # Path to a file containing regex patterns for excluding paths from the scan.
