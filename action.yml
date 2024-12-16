@@ -28,6 +28,10 @@ inputs:
     required: false
     default: "true"
 
+  exclude-paths:
+    description: "Paths to exclude from the scan."
+    required: false
+
   args:
     description: "Additional arguments to pass to trufflehog."
     required: false
@@ -47,13 +51,18 @@ runs:
           FAIL_FLAG="--fail"
         fi
 
+        EXCLUDE_FLAG=""
+        if [[ -n "${{ inputs.exclude-paths }}" ]]; then
+          EXCLUDE_FLAG="-x /pwd/${{ inputs.exclude-paths }}"
+        fi
+
         EXTRA_ARGS=""
         if [[ -n "${{ inputs.args }}" ]]; then
           EXTRA_ARGS="${{ inputs.args }}"
         fi
 
         docker run --rm -v "$PWD:/pwd" trufflesecurity/trufflehog:latest git file:///pwd \
-        --json --no-update $RESULTS_FLAG $FAIL_FLAG $EXTRA_ARGS > trufflehog-results.json || exit_code=$?
+        --json --no-update $RESULTS_FLAG $FAIL_FLAG $EXCLUDE_FLAG $EXTRA_ARGS > trufflehog-results.json || exit_code=$?
         echo "TRUFFLEHOG_EXIT_CODE=${exit_code:-0}" >> $GITHUB_ENV
       shell: bash
 
@@ -79,7 +88,7 @@ runs:
     - name: Quality Check with exit_code
       if: env.TRUFFLEHOG_EXIT_CODE == '183'
       run: |
-        echo "TruffleHog found valid credentials. Failing the job."
+        echo "TruffleHog found credentials. Failing the job."
         exit 1
       shell: bash
 
