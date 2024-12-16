@@ -28,6 +28,10 @@ inputs:
     required: false
     default: "true"
 
+  args:
+    description: "Additional arguments to pass to trufflehog."
+    required: false
+
 runs:
   using: "composite"
   steps:
@@ -43,8 +47,13 @@ runs:
           FAIL_FLAG="--fail"
         fi
 
+        EXTRA_ARGS=""
+        if [[ -n "${{ inputs.args }}" ]]; then
+          EXTRA_ARGS="${{ inputs.args }}"
+        fi
+
         docker run --rm -v "$PWD:/pwd" trufflesecurity/trufflehog:latest git file:///pwd \
-        --json --no-update $RESULTS_FLAG $FAIL_FLAG > trufflehog-results.json || exit_code=$?
+        --json --no-update $RESULTS_FLAG $FAIL_FLAG $EXTRA_ARGS > trufflehog-results.json || exit_code=$?
         echo "TRUFFLEHOG_EXIT_CODE=${exit_code:-0}" >> $GITHUB_ENV
       shell: bash
 
