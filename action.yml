@@ -71,7 +71,11 @@ runs:
         elif [[ -n "${{ inputs.branch }}" ]]; then
           BRANCH_FLAG="--branch=${{ inputs.branch }}"
         else
-          BRANCH_FLAG="--branch=${{ github.head_ref }}"
+          if [[ -n "${{ github.event.pull_request.head.ref }}" ]]; then
+            BRANCH_FLAG="--branch=${{ github.event.pull_request.head.ref }}"
+          else
+            BRANCH_FLAG="--branch=${{ github.ref_name }}"
+          fi
         fi
 
         docker run --rm -v "$PWD:/pwd" trufflesecurity/trufflehog:latest git file:///pwd \
