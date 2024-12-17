@@ -112,6 +112,25 @@ All available Flags:
 - [Scan a Specific Branch](#scan-a-specific-branch)
 - [Exclude Paths](#exclude-paths)
 
+### Scan the Branch PR Was Raised On or Pushed To
+
+To scan only the branch where the PR was raised or code was pushed, you need to checkout the head branch:
+```yaml
+- name: Checkout Code
+  uses: actions/checkout@v4
+  with:
+    ref: ${{ github.head_ref }} # Head branch of the PR. By default only this will be scanned.
+
+- name: Accuknox Secret Scan
+  uses: accuknox/secret-scan-action@v1.0.0
+  with:
+    token: ${{ secrets.ACCUKNOX_TOKEN }}
+    tenant_id: ${{ secrets.ACCUKNOX_TENANT_ID }}
+    label: 'label-name'
+    endpoint: ${{ secrets.ACCUKNOX_ENDPOINT }}
+    fail: "false"
+```
+
 ### Scan Only the Last 5 Commits
 
 If you want to limit the scan to the last 5 commits, update the `fetch-depth` parameter during checkout:
