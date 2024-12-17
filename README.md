@@ -105,6 +105,7 @@ All available Flags:
 
 ## Scenarios
 
+- [Scan the Branch PR Was Raised On or Pushed To](#scan-the-branch-pr-was-raised-on-or-pushed-to)
 - [Scan Only the Last 5 Commits](#scan-only-the-last-5-commits)
 - [Scan the Entire Git History](#scan-the-entire-git-history)
 - [Run on Push and Pull Requests](#run-on-push-and-pull-requests)
