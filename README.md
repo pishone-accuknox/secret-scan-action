@@ -18,6 +18,7 @@ This GitHub Action scans your repository for secrets and uploads the result to y
 | `endpoint` | The URL of the CSPM panel to push the scan results to. | Required | `cspm.demo.accuknox.com` |
 | `results` | Specifies which type(s) of results to output: `verified`, `unknown`, `unverified`, `filtered_unverified`. Defaults to all types. | Optional | `all` |
 | `fail` | Fail the pipeline if secrets are found. | Optional | `false` |
+| `branch` | Branch to scan. Use name of the branch or `all-branches` | Optional | `HEAD branch` |
 | `exclude-paths` | Paths to exclude from the scan. | Optional | `None` |
 | `args` | Additional arguments to pass to TruffleHog. | Optional | `None` |
 
@@ -57,6 +58,11 @@ This GitHub Action scans your repository for secrets and uploads the result to y
     # Default: false
     # Optional
     fail: "true"
+
+    # Branch to scan.
+    # Example: main
+    # Optional
+    branch: "all-branches"
 
     # Path to a file containing regex patterns for excluding paths from the scan.
     # Example: exclude-paths.txt

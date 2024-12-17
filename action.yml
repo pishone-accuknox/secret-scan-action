@@ -28,6 +28,10 @@ inputs:
     required: false
     default: "false"
 
+  branch:
+    description: "The branch to scan. Use 'all-branches' to scan all branches"
+    required: false
+
   exclude-paths:
     description: "Paths to exclude from the scan."
     required: false
@@ -61,8 +65,17 @@ runs:
           EXTRA_ARGS="${{ inputs.args }}"
         fi
 
+        BRANCH_FLAG=""
+        if [[ "${{ inputs.branch }}" == "all-branches" ]]; then
+          BRANCH_FLAG=""
+        elif [[ -n "${{ inputs.branch }}" ]]; then
+          BRANCH_FLAG="--branch=${{ inputs.branch }}"
+        else
+          BRANCH_FLAG="--branch=${{ github.head_ref }}"
+        fi
+
         docker run --rm -v "$PWD:/pwd" trufflesecurity/trufflehog:latest git file:///pwd \
-        --json --no-update $RESULTS_FLAG $FAIL_FLAG $EXCLUDE_FLAG $EXTRA_ARGS > trufflehog-results.json || exit_code=$?
+        --json --no-update $BRANCH_FLAG $RESULTS_FLAG $FAIL_FLAG $EXCLUDE_FLAG $EXTRA_ARGS > trufflehog-results.json || exit_code=$?
         echo "TRUFFLEHOG_EXIT_CODE=${exit_code:-0}" >> $GITHUB_ENV
       shell: bash
 
