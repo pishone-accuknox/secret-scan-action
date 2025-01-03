@@ -20,7 +20,7 @@ This GitHub Action scans your repository for secrets and uploads the result to y
 | `fail` | Fail the pipeline if secrets are found. | Optional | `false` |
 | `branch` | Branch to scan. Use name of the branch or `all-branches` | Optional | `HEAD branch` |
 | `exclude-paths` | Paths to exclude from the scan. | Optional | `None` |
-| `args` | Additional arguments to pass to TruffleHog. | Optional | `None` |
+| `args` | Additional arguments to pass to the CLI. | Optional | `None` |
 
 ---
 
