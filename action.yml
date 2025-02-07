@@ -40,6 +40,16 @@ inputs:
     description: "Additional arguments to pass to trufflehog."
     required: false
 
+  mount_path:
+    description: "Path to mount the directory in the container. Defaults to /pwd."
+    required: false
+    default: "/pwd"
+
+  source_path:
+    description: "Path to the directory to scan. Defaults to $PWD."
+    required: false
+    default: "$PWD"
+
 runs:
   using: "composite"
   steps:
@@ -78,7 +88,7 @@ runs:
           fi
         fi
 
-        docker run --rm -v "$PWD:/pwd" trufflesecurity/trufflehog:3.88.1 git file:///pwd \
+        docker run --rm -v "${source_path}:${mount_path}" trufflesecurity/trufflehog:3.88.1 git file://${mount_path} \
         --json --no-update $BRANCH_FLAG $RESULTS_FLAG $FAIL_FLAG $EXCLUDE_FLAG $EXTRA_ARGS > trufflehog-results.json || exit_code=$?
         echo "TRUFFLEHOG_EXIT_CODE=${exit_code:-0}" >> $GITHUB_ENV
       shell: bash
